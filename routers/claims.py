@@ -6,6 +6,7 @@ import asyncio
 from fastapi import File, UploadFile
 import os
 router = APIRouter()
+from fastapi import HTTPException
 
 @router.post("/claim")
 def claim(data: ClaimInput, background_tasks: BackgroundTasks):
@@ -29,5 +30,28 @@ def upload_file(file: UploadFile = File(...)):
     return {"fileName": file.filename}
 
 async def process_claim(claim_id: str):
-    await asyncio.sleep(3)
-    print(f"Processed {claim_id}")
+    try:
+        await asyncio.sleep(3)
+        1/0
+        print(f"Processed {claim_id}")
+    except Exception:
+        raise HTTPException(
+            status_code=500,
+            detail='Internal Server Error'
+        )
+
+
+claims = {
+    '123': {'status': 'processed'},
+    '456': {'status': 'under review'}
+}
+
+@router.get("/claim/{claim_id}")
+def get_claim(claim_id: str):
+    if claim_id not in claims:
+        raise HTTPException(
+            status_code=404,
+            detail=f'The claim_id {claim_id} is invalid'
+        )
+    return claims[claim_id]
+    
