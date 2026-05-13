@@ -55,3 +55,9 @@ def get_claim(claim_id: str):
         )
     return claims[claim_id]
     
+@router.get("/health")
+def health():
+    return {
+        'status' : 'OK',
+        'project' : 'TriageIQ'
+    }
