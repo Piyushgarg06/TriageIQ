@@ -32,13 +32,10 @@ def upload_file(file: UploadFile = File(...)):
 async def process_claim(claim_id: str):
     try:
         await asyncio.sleep(3)
-        1/0
+        claims[claim_id] = {'status': 'processed'}
         print(f"Processed {claim_id}")
-    except Exception:
-        raise HTTPException(
-            status_code=500,
-            detail='Internal Server Error'
-        )
+    except Exception as e:
+        print(f"Error processing claim {claim_id}: {e}")
 
 
 claims = {
